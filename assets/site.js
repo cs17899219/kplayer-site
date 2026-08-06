@@ -1,12 +1,18 @@
-const demoUrl = 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8';
+const appleHlsUrl = 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8';
+const bunnyMp4Url = 'https://cdn.jsdelivr.net/npm/big-buck-bunny-1080p@0.0.6/video.mp4';
+const bunnyHlsUrl = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
 const email = 'kplayer.support@uemind.com';
 
 const common = {
-  en: { privacy: 'Privacy', terms: 'Terms', support: 'Support', sources: 'Source format', demo: 'Review demo', language: 'Language', updated: 'Effective: 4 August 2026' },
-  'zh-Hans': { privacy: '隐私政策', terms: '用户协议', support: '支持', sources: '源格式说明', demo: '审核演示', language: '语言', updated: '生效日期：2026 年 8 月 4 日' },
-  'zh-Hant': { privacy: '隱私政策', terms: '使用者協議', support: '支援', sources: '來源格式說明', demo: '審核展示', language: '語言', updated: '生效日期：2026 年 8 月 4 日' },
-  'es-MX': { privacy: 'Privacidad', terms: 'Términos', support: 'Soporte', sources: 'Formato de fuentes', demo: 'Demostración para revisión', language: 'Idioma', updated: 'Vigente desde el 4 de agosto de 2026' },
+  en: { privacy: 'Privacy', terms: 'Terms', support: 'Support', sources: 'Source format', demo: 'Review demo', language: 'Language', copyUrl: 'Copy URL', copied: 'Copied', updated: 'Effective: 4 August 2026' },
+  'zh-Hans': { privacy: '隐私政策', terms: '用户协议', support: '支持', sources: '源格式说明', demo: '审核演示', language: '语言', copyUrl: '复制 URL', copied: '已复制', updated: '生效日期：2026 年 8 月 4 日' },
+  'zh-Hant': { privacy: '隱私政策', terms: '使用者協議', support: '支援', sources: '來源格式說明', demo: '審核展示', language: '語言', copyUrl: '複製 URL', copied: '已複製', updated: '生效日期：2026 年 8 月 4 日' },
+  'es-MX': { privacy: 'Privacidad', terms: 'Términos', support: 'Soporte', sources: 'Formato de fuentes', demo: 'Demostración para revisión', language: 'Idioma', copyUrl: 'Copiar URL', copied: 'Copiado', updated: 'Vigente desde el 4 de agosto de 2026' },
 };
+
+function demoLink(label, url) {
+  return `<a class="button" href="${url}">${label}</a><button class="button copy-url" type="button" data-copy="${url}"></button><p><code>${url}</code></p>`;
+}
 
 const pages = {
   privacy: {
@@ -34,10 +40,10 @@ const pages = {
     'es-MX': ['Guía de formato de fuentes', 'Esta guía describe los formatos de configuración de fuentes compatibles. No proporciona ni recomienda sitios de contenido.', [['Fuente CMS', 'Una fuente CMS usa su URL de API. Ejemplo: <code>https://example.invalid/api.php/provide/vod/</code>.'], ['Fuente con script', 'Una fuente con script tiene un identificador de API y una URL <code>ext</code> para su entorno de JavaScript. Agrega solo código y puntos de acceso que estés autorizado a usar.'], ['Responsabilidad', 'Las fuentes pueden realizar solicitudes de red, incluso a servicios multimedia de red local como un NAS. Revisa una fuente antes de agregarla y no incluyas credenciales en diagnósticos compartidos.']]],
   },
   demo: {
-    en: ['App Review Demo', 'This page provides a public HLS test stream for Kplayer direct-play review.', [['Direct-play URL', `<a class="button" href="${demoUrl}">Open Apple HLS sample</a><p><code>${demoUrl}</code></p>`], ['Review path', 'Open Kplayer → choose Play Video Link → paste the HLS URL above → Play. This demonstrates the primary URL direct-play flow.'], ['Sample origin', 'The stream is hosted by Apple for HLS playback testing. Kplayer does not provide this content.']]],
-    'zh-Hans': ['App 审核演示', '此页面提供公开 HLS 测试流，用于审核 Kplayer 的 URL 直放功能。', [['直放 URL', `<a class="button" href="${demoUrl}">打开 Apple HLS 样例</a><p><code>${demoUrl}</code></p>`], ['审核路径', '打开 Kplayer → 选择“播放视频链接”→ 粘贴上方 HLS URL → 播放。此路径演示主要的 URL 直放流程。'], ['样例来源', '该流由 Apple 托管，用于 HLS 播放测试。Kplayer 不提供该内容。']]],
-    'zh-Hant': ['App 審核展示', '此頁面提供公開 HLS 測試串流，用於審核 Kplayer 的 URL 直放功能。', [['直放 URL', `<a class="button" href="${demoUrl}">開啟 Apple HLS 範例</a><p><code>${demoUrl}</code></p>`], ['審核路徑', '開啟 Kplayer → 選擇「播放影片連結」→ 貼上上方 HLS URL → 播放。此路徑展示主要的 URL 直放流程。'], ['範例來源', '該串流由 Apple 代管，用於 HLS 播放測試。Kplayer 不提供該內容。']]],
-    'es-MX': ['Demostración para revisión de la app', 'Esta página proporciona una transmisión HLS pública para revisar la reproducción directa por URL de Kplayer.', [['URL de reproducción directa', `<a class="button" href="${demoUrl}">Abrir muestra HLS de Apple</a><p><code>${demoUrl}</code></p>`], ['Ruta de revisión', 'Abre Kplayer → elige Reproducir enlace de video → pega la URL HLS anterior → Reproducir. Esta ruta demuestra el flujo principal de reproducción directa por URL.'], ['Origen de la muestra', 'Apple aloja esta transmisión para pruebas de reproducción HLS. Kplayer no proporciona este contenido.']]],
+    en: ['App Review Demo', 'Choose any of these public streams for Kplayer direct-play review; delivery can vary by network.', [['Direct-play URLs', `${demoLink('Apple HLS sample', appleHlsUrl)}${demoLink('Big Buck Bunny MP4', bunnyMp4Url)}${demoLink('Big Buck Bunny adaptive HLS', bunnyHlsUrl)}`], ['Review path', 'Open Kplayer → choose Play Video Link → paste any URL above → Play. Choose the stream that works best on the review network.'], ['Source and attribution', 'Big Buck Bunny is licensed under Creative Commons Attribution 3.0 by Blender Foundation. All samples are externally hosted; Kplayer does not provide their content.']]],
+    'zh-Hans': ['App 审核演示', '此页面提供多个公开流，用于审核 Kplayer 的 URL 直放功能；交付速度可能因网络而异。', [['直放 URL', `${demoLink('Apple HLS 样例', appleHlsUrl)}${demoLink('Big Buck Bunny MP4', bunnyMp4Url)}${demoLink('Big Buck Bunny 自适应 HLS', bunnyHlsUrl)}`], ['审核路径', '打开 Kplayer → 选择“播放视频链接”→ 粘贴任一上方 URL → 播放。请根据审核网络选择最流畅的流。'], ['来源与署名', 'Big Buck Bunny 由 Blender Foundation 以 Creative Commons Attribution 3.0 许可发布。所有样例均由第三方托管；Kplayer 不提供其内容。']]],
+    'zh-Hant': ['App 審核展示', '此頁面提供多個公開串流，用於審核 Kplayer 的 URL 直放功能；傳輸速度可能因網路而異。', [['直放 URL', `${demoLink('Apple HLS 範例', appleHlsUrl)}${demoLink('Big Buck Bunny MP4', bunnyMp4Url)}${demoLink('Big Buck Bunny 自適應 HLS', bunnyHlsUrl)}`], ['審核路徑', '開啟 Kplayer → 選擇「播放影片連結」→ 貼上任一上方 URL → 播放。請依審核網路選擇最流暢的串流。'], ['來源與署名', 'Big Buck Bunny 由 Blender Foundation 以 Creative Commons Attribution 3.0 授權發布。所有範例均由第三方代管；Kplayer 不提供其內容。']]],
+    'es-MX': ['Demostración para revisión de la app', 'Elige cualquiera de estas transmisiones públicas para revisar la reproducción directa por URL de Kplayer; la entrega puede variar según la red.', [['URL de reproducción directa', `${demoLink('Muestra HLS de Apple', appleHlsUrl)}${demoLink('MP4 de Big Buck Bunny', bunnyMp4Url)}${demoLink('HLS adaptativo de Big Buck Bunny', bunnyHlsUrl)}`], ['Ruta de revisión', 'Abre Kplayer → elige Reproducir enlace de video → pega cualquiera de las URL anteriores → Reproducir. Elige la transmisión que mejor funcione en la red de revisión.'], ['Fuente y atribución', 'Big Buck Bunny está bajo Creative Commons Attribution 3.0 de Blender Foundation. Todas las muestras se alojan externamente; Kplayer no proporciona su contenido.']]],
   },
 };
 
@@ -60,6 +66,16 @@ function render(selected) {
   document.querySelector('header').innerHTML = `<div class="header-inner"><a class="brand" href="/support/">Kplayer</a><nav><a href="/privacy/">${labels.privacy}</a><a href="/terms/">${labels.terms}</a><a href="/support/">${labels.support}</a><a href="/docs/sources/">${labels.sources}</a><a href="/demo/">${labels.demo}</a></nav><label><span class="sr-only">${labels.language}</span><select id="language"><option value="en">English</option><option value="zh-Hans">简体中文</option><option value="zh-Hant">繁體中文</option><option value="es-MX">Español (México)</option></select></label></div>`;
   document.querySelector('#content').innerHTML = `<h1>${title}</h1><p class="lead">${lead}</p>${sections.map(([heading, body]) => `<section class="card"><h2>${heading}</h2><p>${body}</p></section>`).join('')}<small>${labels.updated}</small>`;
   document.querySelector('footer').innerHTML = `© Kplayer · <a href="mailto:${email}">${email}</a>`;
+  document.querySelectorAll('.copy-url').forEach((button) => {
+    button.textContent = labels.copyUrl;
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        button.textContent = labels.copied;
+        setTimeout(() => { button.textContent = labels.copyUrl; }, 1500);
+      } catch (_) {}
+    });
+  });
   const select = document.querySelector('#language');
   select.value = selected;
   select.addEventListener('change', () => { localStorage.setItem('kplayer-language', select.value); render(select.value); });

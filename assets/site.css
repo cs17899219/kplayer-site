@@ -16,6 +16,7 @@ h2 { margin-top: 2rem; font-size: 1.2rem; }
 code, pre { background: #e5e7eb; border-radius: 6px; padding: .12rem .35rem; overflow-wrap: anywhere; }
 pre { padding: 14px; white-space: pre-wrap; }
 .button { display: inline-block; margin-top: 8px; padding: 9px 13px; border-radius: 8px; background: #2563eb; color: #fff; text-decoration: none; }
+.copy-url { margin-left: 8px; border: 0; cursor: pointer; font: inherit; }
 small { color: #6b7280; }
 footer { padding-top: 20px; padding-bottom: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; }
 select { padding: 6px; border-radius: 6px; }
