@@ -137,7 +137,7 @@ async function searchFetch(url, cookies) {
     const { data } = await $fetch.get(url, { headers: h })
     return data || ''
   } catch (e) {
-    console.log('search fetch error: ' + e.message)
+    $print('search fetch error: ' + e.message)
     return ''
   }
 }
