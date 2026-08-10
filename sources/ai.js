@@ -133,13 +133,9 @@ async function getPlayinfo(ext) {
     }
 }
 
-const SEARCH_COOKIE_KEY = 'girigirilove_search_cookies';
-
-async function searchFetch(url, cookies) {
+async function searchFetch(url) {
   try {
-    const h = Object.assign({}, headers)
-    if (cookies) h['Cookie'] = cookies
-    const { data } = await $fetch.get(url, { headers: h })
+    const { data } = await $fetch.get(url, { headers })
     return data || ''
   } catch (e) {
     $print('search fetch error: ' + e.message)
@@ -156,19 +152,10 @@ async function search(ext) {
 
   const url = appConfig.site + `/search/${text}----------${page}---/`
 
-  // 先从持久化 cache 找 cookies；没有则弹 WebView 让用户过验证码并提取
-  let cookies = $cache.get(SEARCH_COOKIE_KEY) || ''
-  if (!cookies) {
-    cookies = await $utils.openWebView(url)
-    if (cookies) $cache.set(SEARCH_COOKIE_KEY, cookies)
-  }
-
-  // 带 cookie 请求；若仍命中验证码，重新弹 WebView 拿新 cookie 后重试一次
-  let data = await searchFetch(url, cookies)
+  let data = await searchFetch(url)
   if (/ds-verify-img/.test(data)) {
-    cookies = await $utils.openWebView(url)
-    if (cookies) $cache.set(SEARCH_COOKIE_KEY, cookies)
-    data = await searchFetch(url, cookies)
+    await $utils.openSafari(url, headers['User-Agent'])
+    data = await searchFetch(url)
   }
   if (!data) return jsonify({ list: cards })
 
