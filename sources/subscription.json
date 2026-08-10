@@ -5,6 +5,12 @@
       "type": 3,
       "api": "csp_libvio",
       "ext": "https://kplayer.uemind.com/sources/libvio.js"
+    },
+    {
+      "name": "ギリギリ动漫",
+      "type": 3,
+      "api": "csp_ai",
+      "ext": "https://kplayer.uemind.com/sources/ai.js"
     }
   ]
 }
