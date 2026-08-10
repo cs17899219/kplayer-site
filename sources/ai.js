@@ -128,6 +128,20 @@ async function getPlayinfo(ext) {
     return jsonify({ 'urls': [m3u] })
 }
 
+const SEARCH_COOKIE_KEY = 'girigirilove_search_cookies';
+
+async function searchFetch(url, cookies) {
+  try {
+    const h = Object.assign({}, headers)
+    if (cookies) h['Cookie'] = cookies
+    const { data } = await $fetch.get(url, { headers: h })
+    return data || ''
+  } catch (e) {
+    console.log('search fetch error: ' + e.message)
+    return ''
+  }
+}
+
 async function search(ext) {
   ext = argsify(ext)
   let cards = [];
@@ -136,25 +150,38 @@ async function search(ext) {
   let page = ext.page || 1
 
   const url = appConfig.site + `/search/${text}----------${page}---/`
-  const { data } = await $fetch.get(url, {
-    headers
-  })
-  
-  const $ = cheerio.load(data)
-$('.flex.rel.overflow').each((_, each) => {
-  cards.push({
-    vod_id: $(each).find('a[target="_blank"]').attr('href'),
-    vod_name: $(each).find('h3.slide-info-title').text().trim(),
-    vod_pic: appConfig.site + $(each).find('img.gen-movie-img').attr('data-src'),
-    vod_remarks: $(each).find('.slide-info-remarks.cor5').text().trim(),
-    ext: {
-      url: appConfig.site + $(each).find('a[target="_blank"]').attr('href'),
-    },
-  })
-})
 
- return jsonify({
-      list: cards,
+  // 先从持久化 cache 找 cookies；没有则弹 WebView 让用户过验证码并提取
+  let cookies = $cache.get(SEARCH_COOKIE_KEY) || ''
+  if (!cookies) {
+    cookies = await $utils.openWebView(url)
+    if (cookies) $cache.set(SEARCH_COOKIE_KEY, cookies)
+  }
+
+  // 带 cookie 请求；若仍命中验证码，重新弹 WebView 拿新 cookie 后重试一次
+  let data = await searchFetch(url, cookies)
+  if (/ds-verify-img/.test(data)) {
+    cookies = await $utils.openWebView(url)
+    if (cookies) $cache.set(SEARCH_COOKIE_KEY, cookies)
+    data = await searchFetch(url, cookies)
+  }
+  if (!data) return jsonify({ list: cards })
+
+  const $ = cheerio.load(data)
+  $('.flex.rel.overflow').each((_, each) => {
+    cards.push({
+      vod_id: $(each).find('a[target="_blank"]').attr('href'),
+      vod_name: $(each).find('h3.slide-info-title').text().trim(),
+      vod_pic: appConfig.site + $(each).find('img.gen-movie-img').attr('data-src'),
+      vod_remarks: $(each).find('.slide-info-remarks.cor5').text().trim(),
+      ext: {
+        url: appConfig.site + $(each).find('a[target="_blank"]').attr('href'),
+      },
+    })
+  })
+
+  return jsonify({
+    list: cards,
   })
 }
 
