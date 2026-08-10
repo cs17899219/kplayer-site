@@ -4,7 +4,7 @@ const cheerio = createCheerio();
 const appConfig = {
     ver: 1,
     title: 'LIBVIO',
-    site: 'https://www.libvios.com', // 站点域名：libvio.cc → libvio.la → www.libvios.com
+    site: 'https://www.libvio.to', // 站点域名：libvio.cc → libvio.la → libvios.com → www.libvio.to（免梯子）
     tabs: [
         { name: '首页', ext: { url: '/', hasMore: false } },
         { name: '电影', ext: { url: '/type/1-1.html' } },
