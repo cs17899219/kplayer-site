@@ -133,6 +133,15 @@ async function getTracks(ext) {
         });
     });
 
+    // 优先国内线路（免梯子）：HD5(移动云)/BD·BD3·BD4(天翼云·阿里云) 排前，BD5(Cloudflare) 靠后
+    function lineRank(title) {
+        if (/^HD5/.test(title)) return 0;
+        if (/^BD(?!5|2)/.test(title)) return 1;
+        if (/^BD5/.test(title)) return 9;
+        return 5;
+    }
+    groups.sort((a, b) => lineRank(a.title) - lineRank(b.title));
+
     return jsonify({ list: groups })
 }
 
