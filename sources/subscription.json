@@ -1,0 +1,28 @@
+{
+  "sites": [
+    {
+      "name": "LIBVIO",
+      "type": 3,
+      "api": "csp_libvio",
+      "ext": "https://kplayer.uemind.com/sources/libvio.js"
+    },
+    {
+      "name": "哔滴影视",
+      "type": 3,
+      "api": "csp_bde4",
+      "ext": "https://kplayer.uemind.com/sources/bdys.js"
+    },
+    {
+      "name": "欧乐",
+      "type": 3,
+      "api": "csp_Olevod",
+      "ext": "https://kplayer.uemind.com/sources/ole.js"
+    },
+    {
+      "name": "ギリギリ动漫",
+      "type": 3,
+      "api": "csp_ai",
+      "ext": "https://kplayer.uemind.com/sources/ai.js"
+    }
+  ]
+}
