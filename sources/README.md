@@ -15,21 +15,26 @@
 
 | 文件 | 来源 | 说明 |
 |---|---|---|
-| `subscription.json` | 自建 | TV.json 格式：`{"sites":[{name,type,api,ext}]}`，4 个源 |
+| `subscription.json` | 自建 | TV.json 格式：`{"sites":[{name,type,api,ext}]}`，**仅 1 个源** |
 | `libvio.js` | **修复版** | 上游 libvio.js + 播放解析修复（见下方"libvio 修复"） |
-| `bdys.js` | 上游最新 | 上游站点域名已变（`v.xl01.eu.cc` → `xl01.com.de`），**仓库快照已过期，勿用旧快照** |
-| `ole.js` / `ai.js` | 上游最新 | 与仓库快照一致 |
 
-## 订阅内容（4 源）
+## 收录规则（重要）
+
+**只收录上游 `VOD/TV.json`（`https://raw.githubusercontent.com/fangkuia/XPTV/refs/heads/main/VOD/TV.json`）没有的，或需要更新（修复/打补丁）的源。与上游一模一样的源一律不收录** —— 用户端直接订阅上游 TV.json 即可，重复收录只会造成导入冲突/重复源。
+
+2026-08-10 对齐检查：ai.js / bdys.js / ole.js 与上游逐字节一致 → 已从订阅与目录中移除；仅 libvio.js（修复版）保留。
+
+新增源时的检查流程：
+1. 拉取上游 `VOD/TV.json`，确认该源是否已存在；
+2. 已存在且内容一致 → 不收录；
+3. 已存在但需修复（如 libvio）→ 收录修复版；
+4. 上游没有 → 收录，api 命名对齐上游 `all.json` 约定（`https://raw.githubusercontent.com/fangkuia/XPTV/refs/heads/main/all.json`）。
+
+## 订阅内容（当前仅 1 源）
 
 ```json
-{ "name": "LIBVIO",       "type": 3, "api": "csp_libvio",   "ext": "…/sources/libvio.js" }
-{ "name": "哔滴影视",      "type": 3, "api": "csp_bde4",     "ext": "…/sources/bdys.js" }
-{ "name": "欧乐",          "type": 3, "api": "csp_Olevod",   "ext": "…/sources/ole.js" }
-{ "name": "ギリギリ动漫",    "type": 3, "api": "csp_ai",       "ext": "…/sources/ai.js" }
+{ "name": "LIBVIO", "type": 3, "api": "csp_libvio", "ext": "…/sources/libvio.js" }
 ```
-
-api 命名对齐上游 XPTV `all.json` 约定（`https://raw.githubusercontent.com/fangkuia/XPTV/refs/heads/main/all.json`）。
 
 ## KPlayer 源主键（sourceId）规则 — 覆盖机制
 
