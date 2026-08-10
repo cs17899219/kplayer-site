@@ -119,13 +119,18 @@ async function getTracks(ext) {
 async function getPlayinfo(ext) {
     ext = argsify(ext)
     let url = ext.url
-    const { data } = await $fetch.get(url, {
-        headers
-    })
-    const obj = JSON.parse(data.match(/player_aaaa=(.+?)<\/script>/)[1])
-    const m3u = decodeURIComponent(base64decode(obj.url))
-    $print(`***m3u: ${m3u}`)
-    return jsonify({ 'urls': [m3u] })
+    try {
+      const { data } = await $fetch.get(url, { headers })
+      const match = data.match(/player_aaaa=(.+?)<\/script>/)
+      if (!match) return jsonify({ 'urls': [] })
+      const obj = JSON.parse(match[1])
+      const m3u = decodeURIComponent(base64decode(obj.url))
+      $print(`***m3u: ${m3u}`)
+      return jsonify({ 'urls': [m3u] })
+    } catch (e) {
+      $print('playinfo parse error: ' + e.message)
+      return jsonify({ 'urls': [] })
+    }
 }
 
 const SEARCH_COOKIE_KEY = 'girigirilove_search_cookies';
