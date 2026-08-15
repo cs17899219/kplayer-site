@@ -4,7 +4,7 @@ const cheerio = createCheerio();
 const appConfig = {
     ver: 1,
     title: 'LIBVIO',
-    site: 'https://www.libvios.com', // 站点域名
+    site: 'https://www.libvios.com', // 站点域名：libvio.cc → libvio.la → libvios.com
     tabs: [
         { name: '首页', ext: { url: '/', hasMore: false } },
         { name: '电影', ext: { url: '/type/1-1.html' } },
@@ -231,7 +231,7 @@ async function getPlayinfo(ext) {
                         if (parsed.url) {
                             return jsonify({ urls: [parsed.url], headers: [vidHeaders] })
                         }
-                        if (parsed.fatal === true) break
+                        if (parsed.fatal === true || parsed.code === 500) break
                     } catch (e) {
                         console.log(`parse attempt ${attempt + 1} error: ${e.message}`);
                     }
@@ -266,7 +266,7 @@ async function getPlayinfo(ext) {
                         if (parsed.url) {
                             return jsonify({ urls: [parsed.url], headers: [vidHeaders] })
                         }
-                        if (parsed.fatal === true) break
+                        if (parsed.fatal === true || parsed.code === 500) break
                     } catch (e) {
                         console.log(`parse attempt ${attempt + 1} error: ${e.message}`);
                     }
