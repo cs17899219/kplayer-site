@@ -1,6 +1,12 @@
 {
   "sites": [
     {
+      "name": "雪落影视",
+      "type": 3,
+      "api": "csp_xlys",
+      "ext": "https://kplayer.uemind.com/sources/xlys.js"
+    },
+    {
       "name": "LIBVIO",
       "type": 3,
       "api": "csp_libvio",
@@ -11,12 +17,6 @@
       "type": 3,
       "api": "csp_ai",
       "ext": "https://kplayer.uemind.com/sources/ai.js"
-    },
-    {
-      "name": "哔滴影视",
-      "type": 3,
-      "api": "csp_bde4",
-      "ext": "https://kplayer.uemind.com/sources/bdys.js"
     }
   ]
 }
