@@ -17,6 +17,12 @@
       "type": 3,
       "api": "csp_bde4",
       "ext": "https://kplayer.uemind.com/sources/bdys.js"
+    },
+    {
+      "name": "在线之家",
+      "type": 3,
+      "api": "csp_Zxzj",
+      "ext": "https://kplayer.uemind.com/sources/zxzj.js"
     }
   ]
 }
