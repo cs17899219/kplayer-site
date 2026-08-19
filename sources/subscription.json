@@ -23,6 +23,12 @@
       "type": 3,
       "api": "csp_duboku",
       "ext": "https://kplayer.uemind.com/sources/duboku.js"
+    },
+    {
+      "name": "AGE动漫",
+      "type": 3,
+      "api": "csp_age",
+      "ext": "https://kplayer.uemind.com/sources/agedm.js"
     }
   ]
 }
