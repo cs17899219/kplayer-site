@@ -191,6 +191,18 @@ async function getTracks(ext) {
         headers,
     });
     const $ = cheerio.load(data);
+    const metadata = { genres: [], episodeCount: 0 };
+    const year = $('h1').first().text().match(/\b(?:19|20)\d{2}\b/);
+    if (year) metadata.year = Number(year[0]);
+    $('.info-item').each((_, item) => {
+        const $item = $(item);
+        const label = $item.find('.info-label').text().trim();
+        if (label === '类型：') {
+            $item.find('a.info-value').each((_, genre) => metadata.genres.push($(genre).text().trim()));
+        } else if (label === '集数：') {
+            metadata.episodeCount = Number($item.find('.info-value').text().trim()) || 0;
+        }
+    });
     let group = {
         title: '在线',
         tracks: [],
@@ -208,7 +220,7 @@ async function getTracks(ext) {
         }
     });
     groups.push(group);
-    return jsonify({ list: groups })
+    return jsonify({ list: groups, metadata })
 }
 
 async function getPlayinfo(ext) {
@@ -338,4 +350,3 @@ async function search(ext) {
 
     return jsonify({ list: cards });
 }
-

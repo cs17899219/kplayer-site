@@ -72,6 +72,15 @@ async function getTracks(ext) {
   })
   
   const $ = cheerio.load(data)
+  const metadata = { genres: [], episodeCount: 0 }
+  $('li').each((_, item) => {
+    const $item = $(item)
+    const label = $item.find('em').first().text().trim()
+    if (label === '年份：') metadata.year = Number($item.text().replace(label, '').trim()) || undefined
+    if (label === '类型：') {
+      $item.find('a').each((_, genre) => metadata.genres.push($(genre).text().trim()))
+    }
+  })
   let gn = []
   
   // 获取所有分类标签名称
@@ -113,7 +122,8 @@ async function getTracks(ext) {
     groups.push(group)
   })
   
-  return jsonify({ list: groups })
+  metadata.episodeCount = Math.max(0, ...groups.map((group) => group.tracks.length))
+  return jsonify({ list: groups, metadata })
 }
 
 async function getPlayinfo(ext) {

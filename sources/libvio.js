@@ -88,6 +88,16 @@ async function getTracks(ext) {
     let groups = [];
     const { data } = await $fetch.get(url, { headers });
     const $ = cheerio.load(data);
+    const metadata = { genres: [], episodeCount: 0 };
+    $('.vod-info .vod-meta').first().find('.meta-item').each((_, item) => {
+        const value = $(item).text().trim();
+        const episodes = value.match(/^共\s*(\d+)\s*集$/);
+        if (episodes) metadata.episodeCount = Number(episodes[1]);
+        else if (/^\d{4}$/.test(value)) metadata.year = Number(value);
+        else if (metadata.genres.length === 0 && /[,，]/.test(value)) {
+            metadata.genres = value.split(/[,，]/).map((genre) => genre.trim()).filter(Boolean);
+        }
+    });
 
     // 方式1: 从 playlist-panel 抓播放列表
     $('div.playlist-panel').each((_, panel) => {
@@ -142,7 +152,7 @@ async function getTracks(ext) {
     }
     groups.sort((a, b) => lineRank(a.title) - lineRank(b.title));
 
-    return jsonify({ list: groups })
+    return jsonify({ list: groups, metadata })
 }
 
 async function getPlayinfo(ext) {
