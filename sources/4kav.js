@@ -56,7 +56,11 @@ async function getCards(ext) {
     }
     let val = $cache.get('av')
     if (val) {
-        lastPage = JSON.parse(val)
+        try {
+            lastPage = JSON.parse(val)
+        } catch (e) {
+            $print(`lastPage parse failed: ${e}`)
+        }
     }
 
     let cards = []
