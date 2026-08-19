@@ -1,17 +1,12 @@
 // tv
 // 修复记录（2026-08-20 实测）：
 // 1. 站点域名 4kmp.com → 4k-av.com（旧域名 301 整体迁移）。
-// 2. 站点校验 Accept/Accept-Language 头，仅 UA 一律 403；所有 $fetch 补公共请求头。
+// 2. 站点校验 Accept/Accept-Language 头，仅 UA 一律 403；由 KPlayer `$fetch`
+//    默认头接管（设置页「内容语言」驱动 Accept-Language），插件不再自带。
 // 3. 搜索 /s?q= 对非浏览器会话返回 Cloudflare 挑战页（Attention Required），
 //    命中后 $utils.openSafari 人工完成，关闭后重试一次；仍失败返回空列表。
 
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1'
-
-const HEADERS = {
-    'User-Agent': UA,
-    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-}
 
 let appConfig = {
     ver: 1,
@@ -73,7 +68,9 @@ async function getCards(ext) {
     $print(`url: ${url}`)
 
     const { data } = await $fetch.get(url, {
-        headers: HEADERS,
+        headers: {
+            'User-Agent': UA,
+        },
     })
 
     const elems = $html.elements(data, '#MainContent_newestlist .virow .NTMitem')
@@ -113,7 +110,9 @@ async function getTracks(ext) {
     let url = ext.url
 
     const { data } = await $fetch.get(url, {
-        headers: HEADERS,
+        headers: {
+            'User-Agent': UA,
+        },
     })
 
     // 檢查是不是多集
@@ -155,7 +154,9 @@ async function getPlayinfo(ext) {
     let url = ext.url.replace('www.', '')
 
     const { data } = await $fetch.get(url, {
-        headers: HEADERS,
+        headers: {
+            'User-Agent': UA,
+        },
     })
 
     let playUrl = $html.attr(data, '#MainContent_videowindow video source', 'src')
@@ -171,14 +172,18 @@ async function search(ext) {
     let url = appConfig.site + `/s?q=${text}`
 
     let { data } = await $fetch.get(url, {
-        headers: HEADERS,
+        headers: {
+            'User-Agent': UA,
+        },
     })
 
     // 非浏览器会话命中 Cloudflare 挑战页：人工完成后重试一次
     if (data.includes('Attention Required!')) {
         await $utils.openSafari(url, UA)
         const retry = await $fetch.get(url, {
-            headers: HEADERS,
+            headers: {
+                'User-Agent': UA,
+            },
         })
         data = retry.data
     }
