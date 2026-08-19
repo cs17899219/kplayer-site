@@ -29,6 +29,12 @@
       "type": 3,
       "api": "csp_age",
       "ext": "https://kplayer.uemind.com/sources/agedm.js"
+    },
+    {
+      "name": "4k-av",
+      "type": 3,
+      "api": "csp_4kav",
+      "ext": "https://kplayer.uemind.com/sources/4kav.js"
     }
   ]
 }
