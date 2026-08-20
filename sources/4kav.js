@@ -5,8 +5,9 @@
 //    默认头接管（设置页「内容语言」驱动 Accept-Language），插件不再自带。
 // 3. 搜索 /s?q= 对非浏览器会话返回 Cloudflare 挑战页（Attention Required），
 //    命中后 $utils.openSafari 人工完成，关闭后重试一次；仍失败返回空列表。
-// 4. tabs URL 必须带尾斜杠：无斜杠时站点 301，dart:io 跟随重定向会丢自定义头，
-//    第二跳缺 Accept/Accept-Language 被 403（首页无重定向所以一直正常）。
+// 4. tabs URL 必须带尾斜杠：无斜杠时站点 301，dart:io 跟随重定向会把 UA
+//    重置为 Dart 默认 UA（其余自定义头保留），第二跳被按 UA 403（首页无重定向所以一直正常）。
+//    平台侧已将 worker dio 的 HttpClient.userAgent 置空根治此问题。
 
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1'
 
