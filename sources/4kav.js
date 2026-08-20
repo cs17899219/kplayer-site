@@ -1,8 +1,9 @@
 // tv
 // 修复记录（2026-08-20 实测）：
 // 1. 站点域名 4kmp.com → 4k-av.com（旧域名 301 整体迁移）。
-// 2. 站点校验 Accept/Accept-Language 头，仅 UA 一律 403；由 KPlayer `$fetch`
-//    默认头接管（设置页「内容语言」驱动 Accept-Language），插件不再自带。
+// 2. 站点校验 Accept/Accept-Language 头，仅 UA 一律 403；Accept-Language 由
+//    KPlayer `$fetch` 默认头接管（设置页「内容语言」驱动），浏览器式 Accept
+//    由插件显式声明（2026-08-21 起平台默认 Accept 改 */*，见 HEADERS）。
 // 3. 搜索正确参数是 x（站点表单 input name=x）：/s?q= 被 CF WAF 永封
 //    （Attention Required），/s?x= 正常。高频搜索触发全站限频 403（自定义页，
 //    IP 级，数十分钟级），命中 Cloudflare 挑战页时 $utils.openSafari 人工完成，
@@ -12,6 +13,13 @@
 //    平台侧已将 worker dio 的 HttpClient.userAgent 置空根治此问题。
 
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1'
+
+// 站点按 vary: User-Agent 校验请求头：仅 UA 一律 403，必须带浏览器式 Accept
+//（Accept-Language 由 $fetch 平台默认补）。
+const HEADERS = {
+    'User-Agent': UA,
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+}
 
 let appConfig = {
     ver: 1,
@@ -73,9 +81,7 @@ async function getCards(ext) {
     $print(`url: ${url}`)
 
     const { data } = await $fetch.get(url, {
-        headers: {
-            'User-Agent': UA,
-        },
+        headers: HEADERS,
     })
 
     const elems = $html.elements(data, '#MainContent_newestlist .virow .NTMitem')
@@ -115,9 +121,7 @@ async function getTracks(ext) {
     let url = ext.url
 
     const { data } = await $fetch.get(url, {
-        headers: {
-            'User-Agent': UA,
-        },
+        headers: HEADERS,
     })
 
     // 檢查是不是多集
@@ -159,9 +163,7 @@ async function getPlayinfo(ext) {
     let url = ext.url.replace('www.', '')
 
     const { data } = await $fetch.get(url, {
-        headers: {
-            'User-Agent': UA,
-        },
+        headers: HEADERS,
     })
 
     let playUrl = $html.attr(data, '#MainContent_videowindow video source', 'src')
@@ -177,18 +179,14 @@ async function search(ext) {
     let url = appConfig.site + `/s?x=${text}`
 
     let { data } = await $fetch.get(url, {
-        headers: {
-            'User-Agent': UA,
-        },
+        headers: HEADERS,
     })
 
     // 非浏览器会话命中 Cloudflare 挑战页：人工完成后重试一次
     if (data.includes('Attention Required!')) {
         await $utils.openSafari(url, UA)
         const retry = await $fetch.get(url, {
-            headers: {
-                'User-Agent': UA,
-            },
+            headers: HEADERS,
         })
         data = retry.data
     }
