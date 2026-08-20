@@ -20,6 +20,9 @@ const headers = {
     Referer: `${appConfig.site}/`,
     Origin: appConfig.site,
     'User-Agent': UA,
+    // 2026-08-21：站点 WAF 对浏览器式 Accept 头（$fetch 平台默认补的那个）一律 403
+    // 「正在验证您的浏览器」挑战页，必须显式覆盖为 */*（列表/详情/播放/搜索页均实测）。
+    Accept: '*/*',
 };
 
 // 播放源(from) -> /vid/* 解析器路由。
@@ -120,7 +123,7 @@ async function getTracks(ext) {
 
     // 方式2: 如果没有 playlist-panel，从立即播放按钮抓
     if (groups.length === 0) {
-        const playBtn = $('a[href^="/play/"]').attr('href');
+        const playBtn = $('a[href^="/w/"]').attr('href');
         if (playBtn) {
             groups.push({
                 title: '立即播放',
@@ -193,7 +196,7 @@ async function getPlayinfo(ext) {
                 .replace('{next}', obj.link_next)
                 .replace('{id}', obj.id)
                 .replace('{nid}', obj.nid);
-            const vidHeaders = { Referer: url, 'User-Agent': UA };
+            const vidHeaders = { Referer: url, 'User-Agent': UA, Accept: '*/*' };
 
             const { data: vidData } = await $fetch.get(vidUrl, { headers: vidHeaders });
 
@@ -208,7 +211,7 @@ async function getPlayinfo(ext) {
             if (ydApi) {
                 const apiUrl = appConfig.site + ydApi[1].replace(/\\u0026/g, '&');
                 // 签名 exp 很短（~1 分钟内有效），必须立即请求，不重试
-                const { data: apiData } = await $fetch.get(apiUrl, { headers: { 'User-Agent': UA } });
+                const { data: apiData } = await $fetch.get(apiUrl, { headers: { 'User-Agent': UA, Accept: '*/*' } });
                 const parsed = argsify(apiData);
                 if (parsed.url) {
                     return jsonify({ urls: [parsed.url], headers: [vidHeaders] })
