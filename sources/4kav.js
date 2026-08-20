@@ -5,6 +5,8 @@
 //    默认头接管（设置页「内容语言」驱动 Accept-Language），插件不再自带。
 // 3. 搜索 /s?q= 对非浏览器会话返回 Cloudflare 挑战页（Attention Required），
 //    命中后 $utils.openSafari 人工完成，关闭后重试一次；仍失败返回空列表。
+// 4. tabs URL 必须带尾斜杠：无斜杠时站点 301，dart:io 跟随重定向会丢自定义头，
+//    第二跳缺 Accept/Accept-Language 被 403（首页无重定向所以一直正常）。
 
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1'
 
@@ -17,21 +19,21 @@ let appConfig = {
             name: '首頁',
             ext: {
                 id: 0,
-                url: 'https://4k-av.com',
+                url: 'https://4k-av.com/',
             },
         },
         {
             name: '電影',
             ext: {
                 id: 1,
-                url: 'https://4k-av.com/movie',
+                url: 'https://4k-av.com/movie/',
             },
         },
         {
             name: '電視劇',
             ext: {
                 id: 2,
-                url: 'https://4k-av.com/tv',
+                url: 'https://4k-av.com/tv/',
             },
         },
     ],
@@ -62,7 +64,7 @@ async function getCards(ext) {
     let { id, page = 1, url } = ext
 
     if (page > 1) {
-        url += `/page-${lastPage[id] - page + 1}.html`
+        url += `page-${lastPage[id] - page + 1}.html`
     }
 
     $print(`url: ${url}`)
