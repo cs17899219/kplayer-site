@@ -103,8 +103,9 @@ async function getTracks(ext) {
 async function getPlayinfo(ext) {
     ext = argsify(ext)
     let url = ext.url
+    // 解析页是 HTML 页面 GET：发浏览器导航式 Accept（模拟 Safari）
     const { data } = await $fetch.get(url, {
-        headers
+        headers: { ...headers, Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
     })
     // 解析页格式变更/解析失败时不抛出原始 TypeError，返回空播放地址
     const m = data.match(/Vurl = '(.+?)'/)

@@ -5,6 +5,8 @@ const headers = {
   'Referer': 'https://ani.girigirilove.com/',
   'Origin': 'https://ani.girigirilove.com',
   'User-Agent': UA,
+  // 页面类 GET 发浏览器导航式 Accept（模拟 Safari）；API/媒体请求不在此列
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 }
 
 const appConfig = {

@@ -5,6 +5,8 @@ const headers = {
     Referer: 'https://www.dbku.tv',
     Origin: 'https://www.dbku.tv',
     'User-Agent': UA,
+    // 页面类 GET 发浏览器导航式 Accept（模拟 Safari）
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 }
 
 const appConfig = {

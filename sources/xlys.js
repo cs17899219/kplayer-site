@@ -60,6 +60,8 @@ const headers = {
     Referer: appConfig.site + '/',
     Origin: appConfig.site,
     'User-Agent': UA,
+    // 页面类 GET 发浏览器导航式 Accept（模拟 Safari）；JSON API 不走此头
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 };
 
 async function getConfig() {
@@ -244,7 +246,8 @@ async function getPlayinfo(ext) {
     let encryptedHex = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
     let encryptedString = encryptedHex.toUpperCase();
     let lines = appConfig.site + '/lines?t=' + currentTimeMillis + '&sg=' + encryptedString + '&pid=' + pid;
-    const { data: data2 } = await $fetch.get(lines, { headers });
+    // /lines 是 JSON API，回退 Accept 为 */*
+    const { data: data2 } = await $fetch.get(lines, { headers: { ...headers, Accept: '*/*' } });
     let lineData;
     try {
         lineData = JSON.parse(data2).data || {};
