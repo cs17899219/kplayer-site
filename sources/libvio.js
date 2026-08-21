@@ -20,8 +20,8 @@ const headers = {
     Referer: `${appConfig.site}/`,
     Origin: appConfig.site,
     'User-Agent': UA,
-    // 2026-08-21：站点 WAF 对浏览器式 Accept 头（$fetch 平台默认补的那个）一律 403
-    // 「正在验证您的浏览器」挑战页，必须显式覆盖为 */*（列表/详情/播放/搜索页均实测）。
+    // 2026-08-21：站点 WAF 对浏览器式 Accept 头一律 403「正在验证您的浏览器」挑战页
+    //（当日前 $fetch 平台默认补的正是该头，现已改 */*）。此处显式声明作双保险（列表/详情/播放/搜索页均实测）。
     Accept: '*/*',
 };
 
